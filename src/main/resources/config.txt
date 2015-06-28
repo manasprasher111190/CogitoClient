@@ -1,0 +1,18 @@
+{
+    "rmodule": {
+        "command": [
+            {
+                "id": "1",
+                "description": "Histogram",
+                "params": "data,xmin,xmax,ymin,ymax",
+                "template": "hist(x=%s,xlim=c(%f:%f),ylim=c(%f:%f))"
+            },
+            {
+                "id": "2",
+                "description": "Histogram",
+                "params": "data,xmin,xmax,ymin,ymax",
+                "template": "hist(x=%s,xlim=c(%f:%f),ylim=c(%f:%f))"
+            }
+        ]
+    }
+}
