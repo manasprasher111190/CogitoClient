@@ -1,18 +1,70 @@
 {
-    "rmodule": {
-        "command": [
-            {
+    "list": {
+        "oneD": {
+            "command": [
+                {
                 "id": "1",
-                "description": "Histogram",
+                "description": "BiPolar",
                 "params": "data,xmin,xmax,ymin,ymax",
-                "template": "hist(x=%s,xlim=c(%f:%f),ylim=c(%f:%f))"
-            },
-            {
-                "id": "2",
-                "description": "Histogram",
-                "params": "data,xmin,xmax,ymin,ymax",
-                "template": "hist(x=%s,xlim=c(%f:%f),ylim=c(%f:%f))"
-            }
-        ]
+                "template": "hist(x=%s,xlim=c(%s,%s),ylim=c(%s,%s))",
+                  "alternative": {
+                    "command": [
+                        {
+                            "id": "0",
+                            "description": "Scatter Plot",
+                            "params": "x,y",
+                            "template": "plot(x=%s,y=%s)"
+                        },
+                        {
+                            "id": "0",
+                            "description": "Histogram",
+                            "params": "data,xmin,xmax,ymin,ymax",
+                            "template": "hist(x=%s,xlim=c(%s,%s),ylim=c(%s,%s))"
+                        }
+                    ]
+                }
+                }
+            ]
+        },
+        "twoD": {
+            "command": [
+                {
+                "id": "1",
+                "description": "Scatter Plot",
+                "params": "x,y",
+                "template": "plot(x=%s,y=%s)",
+                  "alternative": {
+                    "command": [
+                        {
+                            "id": "0",
+                            "description": "Scatter Plot",
+                            "params": "x,y",
+                            "template": "plot(x=%s,y=%s)"
+                        },
+                        {
+                            "id": "0",
+                            "description": "Histogram",
+                            "params": "data,xmin,xmax,ymin,ymax",
+                            "template": "hist(x=%s,xlim=c(%s,%s),ylim=c(%s,%s))"
+                        }
+                    ]
+                }
+                }
+            ]
+            
+        },
+        "threeD": {
+            "command": [
+                {
+                "id": "",
+                "description": "",
+                "params": "",
+                "template": "",
+                  "alternative": {
+                    "command": []
+                }
+                }
+            ]
+        }
     }
 }

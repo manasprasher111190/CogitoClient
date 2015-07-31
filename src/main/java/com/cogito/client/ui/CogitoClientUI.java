@@ -7,7 +7,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -19,51 +18,53 @@ import javafx.stage.Stage;
 
 import com.google.common.io.ByteStreams;
 
-public class CogitoClientUI extends Application {
+public class CogitoClientUI {
 
-	@Override
-	public void start(Stage arg0) throws Exception {
-		
+	private final String template;
+	private final String serviceUrl;
+
+	public CogitoClientUI(String template, String url) {
+		this.template = template;
+		this.serviceUrl = url;
+		init();
+	}
+
+	private void init() {
 		final GetTestPlotTask task = new GetTestPlotTask();
 		new Thread(task).start();
 		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			public void handle(WorkerStateEvent arg0) {
-				 byte[] array = task.getValue();
-                 makePlotUi(array);						
+				byte[] array = task.getValue();
+				CogitoClientUIGridHelper.addGraphToCogitoGrid(array);
 			}
 		});
 	}
 
 	private void makePlotUi(byte[] array) {
 		ImageView graphView = new ImageView();
-		    InputStream is = new ByteArrayInputStream(array);
-			graphView.setImage(new Image(is));
-			HBox box = new HBox(graphView);
-			Scene scene = new Scene(box);
-			Stage stage = new Stage();
-			stage.setTitle("Test");
-			stage.setScene(scene);
-			stage.sizeToScene();
-			stage.show();
+		InputStream is = new ByteArrayInputStream(array);
+		graphView.setImage(new Image(is));
+		HBox box = new HBox(graphView);
+		Scene scene = new Scene(box);
+		Stage stage = new Stage();
+		stage.setTitle("Test");
+		stage.setScene(scene);
+		stage.sizeToScene();
+		stage.show();
 	}
-	
-	public static void main(String[] args) {
-		launch(args);
-	}
-	
-	
-	private class GetTestPlotTask extends Task<byte[]>{
 
+	private class GetTestPlotTask extends Task<byte[]> {
 		@Override
 		protected byte[] call() throws Exception {
-			return getPlotImage();
+			return getPlotImage(template);
 		}
-		
+
 	}
 
-	private byte[] getPlotImage() {
+	private byte[] getPlotImage(String template) {
 		try {
-			URL url = new URL("http://localhost:8080/plot");
+			template = template.replace(" ", "");
+			URL url = new URL(serviceUrl + template);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			if (conn.getResponseCode() != 200) {
 				throw new RuntimeException("Failed : HTTP error code : "
@@ -81,7 +82,5 @@ public class CogitoClientUI extends Application {
 			e.printStackTrace();
 		}
 		return null;
-
 	}
-
 }

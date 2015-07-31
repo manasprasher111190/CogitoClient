@@ -5,6 +5,7 @@ class Command {
 	private String description;
 	private String params;
 	private String template;
+	private Alternative alternative;
 
 	public String getId() {
 		return id;
@@ -30,10 +31,19 @@ class Command {
 	public void setTemplate(String template) {
 		this.template = template;
 	}
+	public Alternative getAlternative() {
+		return alternative;
+	}
+	public void setAlternative(Alternative alternative) {
+		this.alternative = alternative;
+	}
+	
 	@Override
 	public String toString() {
-		return "Command [description=" + description + ", params=" + params
-				+ ", template=" + template + "]";
+		return "Command [id=" + id + ", description=" + description
+				+ ", params=" + params + ", template=" + template
+				+ ", alternative=" + alternative + "]";
 	}
+	
 	
 }

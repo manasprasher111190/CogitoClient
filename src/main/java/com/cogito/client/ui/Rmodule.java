@@ -1,22 +1,35 @@
 package com.cogito.client.ui;
 
-import java.util.List;
+
 
 
 class Rmodule{
-	private List<Command> command;
-
-	public List<Command> getCommand() {
-		return command;
+	private OneD oneD;
+	private TwoD twoD;
+	private ThreeD threeD;
+	
+	
+	public OneD getOneD() {
+		return oneD;
 	}
 
-	public void setCommand(List<Command> command) {
-		this.command = command;
+	public void setOneD(OneD oneD) {
+		this.oneD = oneD;
 	}
 
-	@Override
-	public String toString() {
-		return "Rmodule [command=" + command + "]";
+	public TwoD getTwoD() {
+		return twoD;
 	}
 	
+	public void setTwoD(TwoD twoD) {
+		this.twoD = twoD;
+	}
+	
+	public ThreeD getThreeD() {
+		return threeD;
+	}
+	
+	public void setThreeD(ThreeD threeD) {
+		this.threeD = threeD;
+	}
 }
