@@ -22,7 +22,7 @@ public class CogitoClientUI {
 
 	private final String template;
 	private final String serviceUrl;
-
+ 
 	public CogitoClientUI(String template, String url) {
 		this.template = template;
 		this.serviceUrl = url;

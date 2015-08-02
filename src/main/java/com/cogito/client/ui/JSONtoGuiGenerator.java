@@ -2,7 +2,10 @@ package com.cogito.client.ui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import javax.print.DocFlavor.URL;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -68,13 +71,18 @@ public class JSONtoGuiGenerator {
 					String replace = alternatives.toString().replace("[", "").replace("]", "");
 					String[] split = replace.split("&");
 					for(int j =0 ; j< split.length; j++ ){
-						templates.add(String.format(commandList.get(i).getAlternative().getCommand().get(j).getTemplate(), cleanUpCommas(split[j]).split(",")));
+						String template = commandList.get(i).getAlternative().getCommand().get(j).getTemplate();
+						String[] split2 = cleanUpCommas(split[j]).split(",");
+						String format = String.format(template, split2);
+						System.out.println("FORMAT: "+format);
+						templates.add(format);
 					}
 				 
 				}
 				CogitoClientUIGridHelper.showCogitoGrid();
-				for(String t: templates){
-					new CogitoClientUI(t.replace(" ", ""),UrlUtilities.RSERVICE_URL);		
+				for (String t : templates) {
+					new CogitoClientUI(t.replace(" ", ""),
+							UrlUtilities.RSERVICE_URL + "/data?template=");
 				}
 			}
 		});

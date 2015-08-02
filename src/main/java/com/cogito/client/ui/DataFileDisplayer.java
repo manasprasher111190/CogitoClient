@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -38,13 +37,18 @@ import org.apache.http.util.EntityUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DataFileDisplayer extends Application {
+public final class DataFileDisplayer {
 	
 	private Button uploadButton = new Button("UPLOAD");
 	private Button nextButton = new Button("NEXT");
 	private ListView<String> listView = new ListView<>();
+	private static final DataFileDisplayer INSTANCE = new DataFileDisplayer();
 	
-	public DataFileDisplayer() {
+	public static DataFileDisplayer INSTANCE() {
+		return INSTANCE;
+	}
+	
+	private DataFileDisplayer() {
 		listView.setItems(FXCollections.observableArrayList(getListViewData()));
 		BorderPane pane = new BorderPane(listView);
 		HBox hbox = new HBox();
@@ -163,16 +167,6 @@ public class DataFileDisplayer extends Application {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
-	}
-
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public static void main(String[] args) {
-		launch(args);
 	}
      
 }

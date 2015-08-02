@@ -2,9 +2,10 @@ package com.cogito.client.ui;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,7 +13,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
@@ -22,7 +26,6 @@ import javafx.stage.Stage;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ListofServicesDisplayer {
 	
@@ -37,13 +40,16 @@ public class ListofServicesDisplayer {
 	private static final String MORE_SERVICES_SUPPORTED_TITLE = "More Services Supported By Server";
 	
 	public ListofServicesDisplayer(Rmodule rmodule) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
-		packAllServiceNodesAndShow(rmodule);
+		Optional<RRoot> rmoduleServerObject = InitialLoadUp.getRmoduleServerObject();
+		if(rmoduleServerObject.isPresent()){
+			packAllServiceNodesAndShow(rmodule,rmoduleServerObject.get());	
+		}else{
+			new Alert(AlertType.ERROR, "SERVER OBJECT FAILED TO LOAD", ButtonType.OK);
+		}
+		
 	}
 	
-	private Node getOneDClientServices(Rmodule rmodule)
-			throws JsonParseException, JsonMappingException,
-			MalformedURLException, IOException {
-		RRoot rmod = getServerObject();
+	private Node getOneDClientServices(Rmodule rmodule, RRoot rmod) {
 		ObservableList<String> listofOneDServices = FXCollections
 				.observableArrayList(servicesSupportedByServer(
 						rmodule.getOneD().getCommand().stream()
@@ -64,10 +70,7 @@ public class ListofServicesDisplayer {
 		return makeSection(listof1DServices, listof1DServerServices, SERVER_SERVICES_SUPPORTED_TITLE, MORE_SERVICES_SUPPORTED_TITLE);
 	}
 	
-	private Node getTwoDClientServices(Rmodule rmodule)
-			throws JsonParseException, JsonMappingException,
-			MalformedURLException, IOException {
-		RRoot rmod = getServerObject();
+	private Node getTwoDClientServices(Rmodule rmodule,RRoot rmod) {
 		ObservableList<String> listof2DClientServices = FXCollections
 				.observableArrayList(servicesSupportedByServer(
 						rmodule.getTwoD().getCommand().stream()
@@ -88,16 +91,13 @@ public class ListofServicesDisplayer {
 		return makeSection(listof2DServices, listof2DServerServices, SERVER_SERVICES_SUPPORTED_TITLE, MORE_SERVICES_SUPPORTED_TITLE);
 	}
 	
-	private  Node getThreeDClientServices(Rmodule rmodule)
-			throws JsonParseException, JsonMappingException,
-			MalformedURLException, IOException {
-		RRoot rmod = getServerObject();
+	private  Node getThreeDClientServices(Rmodule rmodule, RRoot rmod){
 		ObservableList<String> listofThreeDClientServices = FXCollections
 				.observableArrayList(servicesSupportedByServer(
-						rmodule.getTwoD().getCommand().stream()
+						rmodule.getThreeD().getCommand().stream()
 								.map(c -> c.getDescription())
 								.collect(Collectors.toList()),
-						rmod.getList().getTwoD().getCommand().stream()
+						rmod.getList().getThreeD().getCommand().stream()
 								.map(c -> c.getDescription())
 								.collect(Collectors.toList())));
 		listof3DServices.setItems(listofThreeDClientServices);
@@ -130,17 +130,9 @@ public class ListofServicesDisplayer {
 		return listofServerServices;
 	}
 
-	private static RRoot getServerObject() throws IOException, JsonParseException,
-			JsonMappingException, MalformedURLException {
-		ObjectMapper serverObject = new ObjectMapper();
-		RRoot rmod = serverObject.readValue(new URL(
-				UrlUtilities.GETLIST_OF_SERVER_SERVICES), RRoot.class);
-		return rmod;
-	}
-	
-	private void packAllServiceNodesAndShow(Rmodule rmodule) throws JsonParseException, JsonMappingException, MalformedURLException, IOException{
+	private void packAllServiceNodesAndShow(Rmodule rClientObject, RRoot rServerObject) {
 		HBox hbox = new HBox();
-		hbox.getChildren().addAll(getOneDClientServices(rmodule),getTwoDClientServices(rmodule),getThreeDClientServices(rmodule));
+		hbox.getChildren().addAll(getOneDClientServices(rClientObject,rServerObject),getTwoDClientServices(rClientObject,rServerObject),getThreeDClientServices(rClientObject,rServerObject));
 		VBox vbox = new VBox(hbox);
 		vbox.getChildren().add(showDataButton);
 		ScrollPane scroll = new ScrollPane(vbox);
@@ -148,16 +140,58 @@ public class ListofServicesDisplayer {
 		Scene scene = new Scene(scroll);
 		stage.setScene(scene);
 		stage.show();
+		setUpdateButtonEventHandler(rClientObject,rServerObject);
 	}
 	
-	private void setUpdataButtonEventHandler() {
+	private void setUpdateButtonEventHandler(Rmodule rmodule, RRoot rServerObject) {
 		showDataButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
 			public void handle(ActionEvent event) {
-				
+				makeCommandList(
+						listof1DServices.getSelectionModel().getSelectedItems(),
+						listof1DServerServices.getSelectionModel()
+								.getSelectedItems(),
+						listof2DServices.getSelectionModel().getSelectedItems(),
+						listof2DServerServices.getSelectionModel()
+								.getSelectedItems(), listof3DServices
+								.getSelectionModel().getSelectedItems(),
+						listof3DServerServices.getSelectionModel()
+								.getSelectedItems(),rmodule,rServerObject);
 			}
 		});
+	}
+
+	private void makeCommandList(ObservableList<String> observableList,
+			ObservableList<String> observableList2,
+			ObservableList<String> observableList3,
+			ObservableList<String> observableList4,
+			ObservableList<String> observableList5,
+			ObservableList<String> observableList6,
+			Rmodule rmodule, RRoot rServerObject) {
+		List<String> collect = Stream
+				.of(observableList, observableList2, observableList3,
+						observableList4, observableList5, observableList6)
+				.flatMap(x -> x.stream()).collect(Collectors.toList());
+
+		try {
+            new JSONtoGuiGenerator(create(collect, rServerObject));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	private List<Command> create(List<String> strings,RRoot serverObject){
+		List<Command> oneDCommands = serverObject.getList().getOneD().getCommand().stream().filter(m -> makePredicate(m,strings)).collect(Collectors.toList());
+		List<Command> twoDCommands = serverObject.getList().getTwoD().getCommand().stream().filter(m -> makePredicate(m,strings)).collect(Collectors.toList());
+		List<Command> threeDCommands = serverObject.getList().getThreeD().getCommand().stream().filter(m -> makePredicate(m,strings)).collect(Collectors.toList());
+		return Stream.of(oneDCommands,twoDCommands,threeDCommands).flatMap(x -> x.stream()).collect(Collectors.toList());
+	}
+
+	private boolean makePredicate(Command m,List<String> strings) {
+		return strings.contains(m.getDescription());
 	}
 	
 	
