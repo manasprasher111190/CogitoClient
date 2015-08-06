@@ -21,7 +21,7 @@ public class NodeBuilder {
 	private VBox node = new VBox();
     private Button submit = new Button("Submit");
     
-	public void injectRmoduleLabelOnly(String labelDescription){
+	public void injectRmoduleLabelOnly(String labelDescription) {
 		node.getChildren().add(new Label(labelDescription));
 	}
 	

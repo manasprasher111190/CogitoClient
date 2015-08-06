@@ -8,10 +8,12 @@ public class CogitoApplication extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		DataFileDisplayer.INSTANCE();
+		InitialLoadUp.loadRmoduleServerObject();
 	}
 	
 	public static void main(String[] args) {
 		launch(args);
+		
 	}
 
 }
