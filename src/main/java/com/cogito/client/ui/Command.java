@@ -3,6 +3,7 @@ package com.cogito.client.ui;
 class Command {
 	private String id;
 	private String description;
+	private String service;
 	private String params;
 	private String template;
 	private Alternative alternative;
@@ -18,6 +19,14 @@ class Command {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getService() {
+		return service;
+	}
+
+	public void setService(String service) {
+		this.service = service;
 	}
 	public String getParams() {
 		return params;

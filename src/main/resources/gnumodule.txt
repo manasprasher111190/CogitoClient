@@ -1,50 +1,77 @@
 {
-    "gnumodule": {
-        "command": [
-            {
+    "list": {
+        "oneD": {
+            "command": [
+                {
                 "id": "0",
-                "description": "ROC",
-                "params": "size,size ratio,xtics,ytics,xrange,yrange,ylabel,xlabel",
-                "template": "set size %s,%s;set size ratio %s;set xtics %s;set ytics %s;set grid;set xrange [%s:%s];set yrange [%s:%s];set key right bottom;set ylabel \"True Positive\";set xlabel \"False Positive Rate\"",
-                "alternative": {
+                "description": "GnuService1D",
+                "service": "GNU",
+                "params": "titleName,datafilePath,column1,column2",
+                "template": "set title \"%s\";set datafile separator \",\";plot \"%s\" using %s:%s with lines;",
+                  "alternative": {
                     "command": [
                         {
-                            "id": "1",
-                            "description": "Histogram",
-                            "params": "data,xmin,xmax,ymin,ymax",
-                            "template": "hist(x=%s,xlim=c(%s,%s),ylim=c(%s,%s))"
+                            "id": "0",
+                            "description": "Scatter Plot",
+                            "service": "GNU",
+                            "params": "titleName,datafilePath,column1,column2",
+                            "template": "set title \"%s\";set datafile separator \",\";plot \"%s\" using %s:%s with lines;"
                         },
                         {
-                            "id": "1",
+                            "id": "0",
                             "description": "Histogram",
-                            "params": "data,xmin,xmax,ymin,ymax",
-                            "template": "hist(x=%s,xlim=c(%s,%s),ylim=c(%s,%s))"
+                            "service": "GNU",
+                            "params": "titleName,datafilePath,column1,column2",
+                            "template": "set title \"%s\";set datafile separator \",\";plot \"%s\" using %s:%s with lines;"
                         }
                     ]
                 }
-            },
-            {
+                }
+            ]
+        },
+        "twoD": {
+            "command": [
+                {
                 "id": "1",
-                "description": "Histogram",
-                "params": "data,xmin,xmax,ymin,ymax",
-                "template": "hist(x=%s,xlim=c(%s,%s),ylim=c(%s,%s))",
-                "alternative": {
+                "description": "GnuService2D",
+                "service": "GNU",
+                "params": "titleName,datafilePath,column1,column2",
+                "template": "set title \"%s\";set datafile separator \",\";plot \"%s\" using %s:%s with lines;",
+                  "alternative": {
                     "command": [
                         {
-                            "id": "1",
-                            "description": "Histogram",
-                            "params": "data,xmin,xmax,ymin,ymax",
-                            "template": "hist(x=%s,xlim=c(%s,%s),ylim=c(%s,%s))"
+                            "id": "0",
+                            "description": "Scatter Plot",
+                            "service": "GNU",
+                            "params": "titleName,datafilePath,column1,column2",
+                            "template": "set title \"%s\";set datafile separator \",\";plot \"%s\" using %s:%s with lines;"
                         },
                         {
-                            "id": "1",
+                            "id": "0",
                             "description": "Histogram",
-                            "params": "data,xmin,xmax,ymin,ymax",
-                            "template": "hist(x=%s,xlim=c(%s,%s),ylim=c(%s,%s))"
+                            "service": "GNU",
+                            "params": "titleName,datafilePath,column1,column2",
+                            "template": "set title \"%s\";set datafile separator \",\";plot \"%s\" using %s:%s with lines;"
                         }
                     ]
                 }
-            }
-        ]
+                }
+            ]
+            
+        },
+        "threeD": {
+            "command": [
+                {
+                "id": "2",
+                "description": "",
+                "service": "GNU",
+                "params": "",
+                "template": "",
+                  "alternative": {
+                    "command": []
+                }
+                }
+            ]
+        }
     }
 }

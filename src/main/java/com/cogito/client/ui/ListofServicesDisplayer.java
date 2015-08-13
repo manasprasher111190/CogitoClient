@@ -39,76 +39,95 @@ public class ListofServicesDisplayer {
 	private static final String SERVER_SERVICES_SUPPORTED_TITLE="Services Supported By Server";
 	private static final String MORE_SERVICES_SUPPORTED_TITLE = "More Services Supported By Server";
 	
-	public ListofServicesDisplayer(Rmodule rmodule) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
+	public ListofServicesDisplayer(Rmodule rmodule, Rmodule gnumodule) throws JsonParseException, JsonMappingException, MalformedURLException, IOException {
 		Optional<RRoot> rmoduleServerObject = InitialLoadUp.getRmoduleServerObject();
-		if(rmoduleServerObject.isPresent()){
-			packAllServiceNodesAndShow(rmodule,rmoduleServerObject.get());	
+		Optional<RRoot> gnumoduleServerObject = InitialLoadUp.getGnuModuleServerObject();
+		if(rmoduleServerObject.isPresent() && gnumoduleServerObject.isPresent()){
+			packAllServiceNodesAndShow(rmodule,gnumodule,rmoduleServerObject.get(),gnumoduleServerObject.get());	
 		}else{
 			new Alert(AlertType.ERROR, "SERVER OBJECT FAILED TO LOAD", ButtonType.OK);
 		}
 		
 	}
 	
-	private Node getOneDClientServices(Rmodule rmodule, RRoot rmod) {
+	private Node getOneDClientServices(Rmodule rClientObject,
+			RRoot rServerObject, Rmodule gnuClientObject, RRoot gnuServerObject) {
 		ObservableList<String> listofOneDServices = FXCollections
 				.observableArrayList(servicesSupportedByServer(
-						rmodule.getOneD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList()),
-						rmod.getList().getOneD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList())));
+						joinList(getListFromObject(rClientObject
+								.getOneD().getCommand()),
+								getListFromObject(gnuClientObject
+										.getOneD().getCommand())),
+						joinList(getListFromObject(rServerObject
+								.getList().getOneD().getCommand()),
+								getListFromObject(gnuServerObject
+										.getList().getOneD().getCommand()))));
 		listof1DServices.setItems(listofOneDServices);
 		listof1DServerServices.setItems(FXCollections
 				.observableArrayList(moreServicesSupportedByServer(
-						rmodule.getOneD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList()),
-						rmod.getList().getOneD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList()))));
-		return makeSection(listof1DServices, listof1DServerServices, SERVER_SERVICES_SUPPORTED_TITLE, MORE_SERVICES_SUPPORTED_TITLE);
+						joinList(getListFromObject(rClientObject
+								.getOneD().getCommand()),
+								getListFromObject(gnuClientObject
+										.getOneD().getCommand())),
+						joinList(getListFromObject(rServerObject
+								.getList().getOneD().getCommand()),
+								getListFromObject(gnuServerObject
+										.getList().getOneD().getCommand())))));
+		return makeSection(listof1DServices, listof1DServerServices,
+				SERVER_SERVICES_SUPPORTED_TITLE, MORE_SERVICES_SUPPORTED_TITLE);
 	}
+
 	
-	private Node getTwoDClientServices(Rmodule rmodule,RRoot rmod) {
+		
+	private Node getTwoDClientServices(Rmodule rClientObject,
+			RRoot rServerObject, RRoot gnuServerObject, Rmodule gnuClientObject) {
 		ObservableList<String> listof2DClientServices = FXCollections
 				.observableArrayList(servicesSupportedByServer(
-						rmodule.getTwoD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList()),
-						rmod.getList().getTwoD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList())));
+						joinList(getListFromObject(rClientObject.getTwoD()
+								.getCommand()),
+								getListFromObject(gnuClientObject.getTwoD()
+										.getCommand())),
+						joinList(getListFromObject(rServerObject.getList()
+								.getTwoD().getCommand()),
+								getListFromObject(gnuServerObject.getList()
+										.getTwoD().getCommand()))));
 		listof2DServices.setItems(listof2DClientServices);
 		listof2DServerServices.setItems(FXCollections
 				.observableArrayList(moreServicesSupportedByServer(
-						rmodule.getTwoD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList()),
-						rmod.getList().getTwoD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList()))));
-		return makeSection(listof2DServices, listof2DServerServices, SERVER_SERVICES_SUPPORTED_TITLE, MORE_SERVICES_SUPPORTED_TITLE);
+						joinList(getListFromObject(rClientObject.getTwoD()
+								.getCommand()),
+								getListFromObject(gnuClientObject.getTwoD()
+										.getCommand())),
+						joinList(getListFromObject(rServerObject.getList()
+								.getTwoD().getCommand()),
+								getListFromObject(gnuServerObject.getList()
+										.getTwoD().getCommand())))));
+		return makeSection(listof2DServices, listof2DServerServices,
+				SERVER_SERVICES_SUPPORTED_TITLE, MORE_SERVICES_SUPPORTED_TITLE);
 	}
 	
-	private  Node getThreeDClientServices(Rmodule rmodule, RRoot rmod){
+	private  Node getThreeDClientServices(Rmodule rClientObject, RRoot rServerObject, Rmodule gnuClientObject, RRoot gnuServerObject){
 		ObservableList<String> listofThreeDClientServices = FXCollections
 				.observableArrayList(servicesSupportedByServer(
-						rmodule.getThreeD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList()),
-						rmod.getList().getThreeD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList())));
+						joinList(getListFromObject(rClientObject.getThreeD()
+								.getCommand()),
+								getListFromObject(gnuClientObject.getThreeD()
+										.getCommand())),
+						joinList(getListFromObject(rServerObject.getList()
+								.getThreeD().getCommand()),
+								getListFromObject(gnuServerObject.getList()
+										.getThreeD().getCommand()))));
 		listof3DServices.setItems(listofThreeDClientServices);
 		listof3DServerServices.setItems(FXCollections
 				.observableArrayList(moreServicesSupportedByServer(
-						rmodule.getThreeD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList()),
-						rmod.getList().getThreeD().getCommand().stream()
-								.map(c -> c.getDescription())
-								.collect(Collectors.toList()))));
+						joinList(getListFromObject(rClientObject.getThreeD()
+								.getCommand()),
+								getListFromObject(gnuClientObject.getThreeD()
+										.getCommand())),
+						joinList(getListFromObject(rServerObject.getList()
+								.getThreeD().getCommand()),
+								getListFromObject(gnuServerObject.getList()
+										.getThreeD().getCommand())))));
 		return makeSection(listof3DServices, listof3DServerServices, SERVER_SERVICES_SUPPORTED_TITLE, MORE_SERVICES_SUPPORTED_TITLE);
 	}
 	
@@ -130,9 +149,9 @@ public class ListofServicesDisplayer {
 		return listofServerServices;
 	}
 
-	private void packAllServiceNodesAndShow(Rmodule rClientObject, RRoot rServerObject) {
+	private void packAllServiceNodesAndShow(Rmodule rClientObject, Rmodule gnuClientObject, RRoot rServerObject, RRoot gnuServerObject) {
 		HBox hbox = new HBox();
-		hbox.getChildren().addAll(getOneDClientServices(rClientObject,rServerObject),getTwoDClientServices(rClientObject,rServerObject),getThreeDClientServices(rClientObject,rServerObject));
+		hbox.getChildren().addAll(getOneDClientServices(rClientObject,rServerObject,gnuClientObject,gnuServerObject),getTwoDClientServices(rClientObject,rServerObject,gnuServerObject,gnuClientObject),getThreeDClientServices(rClientObject,rServerObject,gnuClientObject,gnuServerObject));
 		VBox vbox = new VBox(hbox);
 		vbox.getChildren().add(showDataButton);
 		ScrollPane scroll = new ScrollPane(vbox);
@@ -140,10 +159,10 @@ public class ListofServicesDisplayer {
 		Scene scene = new Scene(scroll);
 		stage.setScene(scene);
 		stage.show();
-		setUpdateButtonEventHandler(rClientObject,rServerObject);
+		setUpdateButtonEventHandler(rClientObject,rServerObject,gnuServerObject);
 	}
 	
-	private void setUpdateButtonEventHandler(Rmodule rmodule, RRoot rServerObject) {
+	private void setUpdateButtonEventHandler(Rmodule rmodule, RRoot rServerObject, RRoot gnuServerObject) {
 		showDataButton.setOnAction(new EventHandler<ActionEvent>() {
 			
 			@Override
@@ -157,9 +176,20 @@ public class ListofServicesDisplayer {
 								.getSelectedItems(), listof3DServices
 								.getSelectionModel().getSelectedItems(),
 						listof3DServerServices.getSelectionModel()
-								.getSelectedItems(),rmodule,rServerObject);
+								.getSelectedItems(),rmodule,rServerObject,gnuServerObject);
 			}
 		});
+	}
+	
+	private <T> List<T> joinList(List<T> list1, List<T> list2) {
+		return Stream.of(list1, list2).flatMap(x -> x.stream())
+				.collect(Collectors.toList());
+	}	
+	
+	private List<String> getListFromObject(List<Command> commandList) {
+		return commandList.stream()
+				.map(c -> c.getDescription())
+				.collect(Collectors.toList());
 	}
 
 	private void makeCommandList(ObservableList<String> observableList,
@@ -168,14 +198,14 @@ public class ListofServicesDisplayer {
 			ObservableList<String> observableList4,
 			ObservableList<String> observableList5,
 			ObservableList<String> observableList6,
-			Rmodule rmodule, RRoot rServerObject) {
+			Rmodule rmodule, RRoot rServerObject, RRoot gnuServerObject) {
 		List<String> collect = Stream
 				.of(observableList, observableList2, observableList3,
 						observableList4, observableList5, observableList6)
 				.flatMap(x -> x.stream()).collect(Collectors.toList());
 
 		try {
-            new JSONtoGuiGenerator(create(collect, rServerObject));
+            new JSONtoGuiGenerator(create(collect, rServerObject, gnuServerObject));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -183,10 +213,10 @@ public class ListofServicesDisplayer {
 
 	}
 	
-	private List<Command> create(List<String> strings,RRoot serverObject){
-		List<Command> oneDCommands = serverObject.getList().getOneD().getCommand().stream().filter(m -> makePredicate(m,strings)).collect(Collectors.toList());
-		List<Command> twoDCommands = serverObject.getList().getTwoD().getCommand().stream().filter(m -> makePredicate(m,strings)).collect(Collectors.toList());
-		List<Command> threeDCommands = serverObject.getList().getThreeD().getCommand().stream().filter(m -> makePredicate(m,strings)).collect(Collectors.toList());
+	private List<Command> create(List<String> strings,RRoot rserverObject,RRoot gnuserverObject){
+		List<Command> oneDCommands = joinList(rserverObject.getList().getOneD().getCommand(), gnuserverObject.getList().getOneD().getCommand()).stream().filter(m -> makePredicate(m,strings)).collect(Collectors.toList());
+		List<Command> twoDCommands = joinList(rserverObject.getList().getTwoD().getCommand(), gnuserverObject.getList().getTwoD().getCommand()).stream().filter(m -> makePredicate(m,strings)).collect(Collectors.toList());
+		List<Command> threeDCommands = joinList(rserverObject.getList().getThreeD().getCommand(), gnuserverObject.getList().getThreeD().getCommand()).stream().filter(m -> makePredicate(m,strings)).collect(Collectors.toList());
 		return Stream.of(oneDCommands,twoDCommands,threeDCommands).flatMap(x -> x.stream()).collect(Collectors.toList());
 	}
 

@@ -9,11 +9,13 @@ public class CogitoApplication extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		DataFileDisplayer.INSTANCE();
 		InitialLoadUp.loadRmoduleServerObject();
+		InitialLoadUp.loadGnuModuleServerObject();
+		InitialLoadUp.loadRmoduleClientObject();
+		InitialLoadUp.loadgnumoduleClientObject();
 	}
 	
 	public static void main(String[] args) {
 		launch(args);
-		
 	}
 
 }

@@ -63,19 +63,36 @@ public class JSONtoGuiGenerator {
 			@Override
 			public void handle(ActionEvent event) {
 				List<String> templates = new ArrayList<>();
+				List<String> templates2 = new ArrayList<>();
 				for (int i = 0; i < commandList.size(); i++) {
 					GUIValueHolder holder = nodeBuilder.getChildrenValues(String.valueOf(i));
 					List<String> listofValues = holder.getListofValues();
-					templates.add(String.format(commandList.get(i).getTemplate(), listofValues.toArray()));
+					String format34 = String.format(commandList.get(i).getTemplate(), listofValues.toArray());
+					System.out.println("MAIN FORMAT:"+format34);
+					if(commandList.get(i).getService().equals("R")){
+						templates.add(format34);	
+					}else if(commandList.get(i).getService().equals("GNU")){
+						templates2.add(format34);
+					}
+					
 					List<String> alternatives = holder.getAlternatives();
 					String replace = alternatives.toString().replace("[", "").replace("]", "");
 					String[] split = replace.split("&");
 					for(int j =0 ; j< split.length; j++ ){
-						String template = commandList.get(i).getAlternative().getCommand().get(j).getTemplate();
-						String[] split2 = cleanUpCommas(split[j]).split(",");
-						String format = String.format(template, split2);
-						System.out.println("FORMAT: "+format);
-						templates.add(format);
+						 if(commandList.get(i).getService().equals("R")){
+							 String template = commandList.get(i).getAlternative().getCommand().get(j).getTemplate();
+							String[] split2 = cleanUpCommas(split[j]).split(",");
+							String format = String.format(template, split2);
+							System.out.println("FORMAT: "+format);
+							templates.add(format); 
+						 }else if(commandList.get(i).equals("GNU")) {
+							 String template = commandList.get(i).getAlternative().getCommand().get(j).getTemplate();
+								String[] split2 = cleanUpCommas(split[j]).split(",");
+								String format = String.format(template, split2);
+								System.out.println("FORMAT: "+format);
+								templates2.add(format);
+						 }
+						
 					}
 				 
 				}
@@ -83,6 +100,9 @@ public class JSONtoGuiGenerator {
 				for (String t : templates) {
 					new CogitoClientUI(t.replace(" ", ""),
 							UrlUtilities.RSERVICE_URL + "/data?template=");
+				}
+				for(String t : templates2) {
+					new CogitoClientUI(t, UrlUtilities.GNUSERVICE_URL);
 				}
 			}
 		});

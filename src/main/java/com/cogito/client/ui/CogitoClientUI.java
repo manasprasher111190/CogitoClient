@@ -5,7 +5,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Arrays;
 
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -56,15 +60,19 @@ public class CogitoClientUI {
 	private class GetTestPlotTask extends Task<byte[]> {
 		@Override
 		protected byte[] call() throws Exception {
-			return getPlotImage(template);
+			
+			byte[] plotImage = getPlotImage(template);
+			System.out.println("BYTE ARRAY:"+Arrays.toString(plotImage));
+			return plotImage;
 		}
 
 	}
 
 	private byte[] getPlotImage(String template) {
 		try {
-			template = template.replace(" ", "");
-			URL url = new URL(serviceUrl + template);
+			String decode = URLEncoder.encode(template, "UTF-8");
+			URL url = new URL(serviceUrl+decode);
+			System.out.println(url.toString());
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			if (conn.getResponseCode() != 200) {
 				throw new RuntimeException("Failed : HTTP error code : "

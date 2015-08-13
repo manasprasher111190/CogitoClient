@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -19,6 +20,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -66,15 +68,21 @@ public final class DataFileDisplayer {
 		nextButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				try {
-					byte[] rModulejsonData = Files.readAllBytes(Paths.get(this
-							.getClass().getClassLoader().getResource("config.txt")
-							.getPath()));
-					ObjectMapper objectMapper = new ObjectMapper();
-					RRoot rmodule = objectMapper.readValue(rModulejsonData, RRoot.class);
-					new ListofServicesDisplayer(rmodule.getList());
-				} catch (IOException e) {
-					e.printStackTrace();
+				Optional<RRoot> rmoduleClientObject = InitialLoadUp
+						.getRmoduleClientObject();
+				Optional<RRoot> gnumoduleClientObject = InitialLoadUp
+						.getgnumoduleClientObject();
+				if (rmoduleClientObject.isPresent()) {
+					try {
+						new ListofServicesDisplayer(rmoduleClientObject.get()
+								.getList(),gnumoduleClientObject.get().getList());
+					} catch (IOException e) {
+						new Alert(AlertType.ERROR, e.getMessage(),
+								ButtonType.OK);
+					}
+				} else {
+					new Alert(AlertType.ERROR,
+							"Can't Load Rmodule Client Object", ButtonType.OK);
 				}
 			}
 		});
