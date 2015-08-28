@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
@@ -20,6 +21,8 @@ public class NodeBuilder {
 	
 	private VBox node = new VBox();
     private Button submit = new Button("Submit");
+    private Button test = new Button("Test");
+    private TextArea errorConsole = new TextArea();
     
 	public void injectRmoduleLabelOnly(String labelDescription) {
 		node.getChildren().add(new Label(labelDescription));
@@ -45,6 +48,7 @@ public class NodeBuilder {
 	
 	private Node injectAlternativeNode(Command command){
 		TitledPane alternativesPane = new TitledPane();
+		alternativesPane.setExpanded(false);
 		alternativesPane.setText(command.getDescription());
 		String[] parameters = parseParameters(command.getParams());
 		VBox vbox = new VBox();
@@ -64,6 +68,8 @@ public class NodeBuilder {
 	
 	public void showPanel(){
 	    node.getChildren().add(submit);
+	    node.getChildren().add(test);
+	    node.getChildren().add(errorConsole);
 		Pane pane = new Pane(node);
 		ScrollPane scrollPane = new ScrollPane(pane);
 		Scene scene = new Scene(scrollPane,800,800);
@@ -77,8 +83,16 @@ public class NodeBuilder {
 		return node;
 	}
 	
-	public Button getButton(){
+	public Button getSubmitButton(){
 		return submit;
+	}
+	
+	public Button getTestButton(){
+		return test;
+	}
+	
+	public TextArea getTextArea(){
+		return errorConsole;
 	}
 	
 	public  GUIValueHolder getChildrenValues(String id){
